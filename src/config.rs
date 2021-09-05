@@ -1,12 +1,13 @@
 use std::collections::HashMap;
 use std::fs::{self, File};
-use std::io::{Read, ErrorKind};
+use std::io::{ErrorKind, Read};
+use std::io;
 use std::path::{Path, PathBuf};
 
 use serde::{Deserialize, Serialize};
-use tokio_rustls::server::TlsStream;
 use tokio::net::TcpStream;
-use std::io;
+use tokio_rustls::server::TlsStream;
+
 use crate::gemini::{GeminiResponseBody, generate_folder_index};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -108,8 +109,9 @@ async fn serve_str(s: &str, stream: &mut TlsStream<TcpStream>) -> io::Result<()>
 async fn serve_file(path: PathBuf, stream: &mut TlsStream<TcpStream>) -> io::Result<()> {
     use tokio::fs;
 
-    let response = match fs::read(path).await {
-        Ok(file) => GeminiResponseBody::new_ok(file),
+    let response = match fs::read(&path).await {
+        Ok(file) => GeminiResponseBody::new_ok(file)
+            .with_mimetype(&path),
         Err(e) => {
             match e.kind() {
                 ErrorKind::NotFound => GeminiResponseBody::not_found(),

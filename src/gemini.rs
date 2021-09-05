@@ -24,6 +24,11 @@ impl GeminiResponseBody {
         }
     }
 
+    pub fn with_mimetype(mut self, path: &Path) -> Self {
+        self.meta = guess_mime_type(path);
+        self
+    }
+
     pub fn not_found() -> Self {
         Self {
             status: 51,
@@ -62,6 +67,14 @@ pub fn normalise_gemini_path(path: &str) -> &str {
         "/"
     } else {
         path
+    }
+}
+
+fn guess_mime_type(path: &Path) -> String {
+    let guess = new_mime_guess::from_path(path).first();
+    match guess {
+        Some(guess) => guess.as_ref().to_string(),
+        None => "text/gemini".to_string(),
     }
 }
 

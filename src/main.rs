@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate log;
 
+use std::collections::HashMap;
 use std::io;
 use std::io::ErrorKind;
 use std::sync::Arc;
@@ -8,13 +9,12 @@ use std::sync::Arc;
 use tokio::io::AsyncReadExt;
 use tokio::net::TcpListener;
 use tokio_rustls::{rustls, TlsAcceptor};
-
-use crate::config::{load_config, VirtualSiteConfig, Config};
-use crate::gemini::{parse_gemini_url, GeminiResponseBody};
-use crate::utils::{load_certs, load_private_key};
-use std::collections::HashMap;
 use tokio_rustls::rustls::ResolvesServerCertUsingSNI;
 use tokio_rustls::rustls::sign::CertifiedKey;
+
+use crate::config::{Config, load_config, VirtualSiteConfig};
+use crate::gemini::{GeminiResponseBody, parse_gemini_url};
+use crate::utils::{load_certs, load_private_key};
 
 mod config;
 mod utils;

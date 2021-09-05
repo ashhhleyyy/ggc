@@ -1,8 +1,9 @@
-use tokio_rustls::rustls;
-use tokio_rustls::rustls::internal::pemfile::{certs, rsa_private_keys};
 use std::fs;
 use std::io::BufReader;
 use std::path::Path;
+
+use tokio_rustls::rustls;
+use tokio_rustls::rustls::internal::pemfile::{certs, rsa_private_keys};
 
 pub const SERVER_BUILD_INFO: &str = concat!(
     env!("CARGO_PKG_NAME"),

@@ -1,4 +1,5 @@
 use std::process::Command;
+
 fn main() {
     // does this need error checking?
     let output = Command::new("git").args(&["rev-parse", "HEAD"]).output().unwrap();

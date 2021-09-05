@@ -27,3 +27,4 @@ toml = "0.5"
 
 # parsing
 url = "2"
+new_mime_guess = "3"
