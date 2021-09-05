@@ -58,7 +58,7 @@ impl GeminiResponseBody {
 }
 
 pub fn normalise_gemini_path(path: &str) -> &str {
-    if path == "" {
+    if path.is_empty() {
         "/"
     } else {
         path

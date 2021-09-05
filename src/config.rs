@@ -90,12 +90,10 @@ async fn serve_static(directory: &Path, auto_index: bool, disable_footer: bool, 
         index_file.push("index.gmi");
         if index_file.exists() {
             serve_file(index_file, stream).await
+        } else if auto_index {
+            serve_str(&generate_folder_index(&path, disable_footer, hide_version).await?, stream).await
         } else {
-            if auto_index {
-                serve_str(&generate_folder_index(&path, disable_footer, hide_version).await?, stream).await
-            } else {
-                GeminiResponseBody::not_found().write_to(stream).await
-            }
+            GeminiResponseBody::not_found().write_to(stream).await
         }
     } else {
         serve_file(path, stream).await
