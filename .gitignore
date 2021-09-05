@@ -1,0 +1,11 @@
+# Cargo
+target/
+
+# IntelliJ
+.idea/
+
+# Development files
+keys/
+static/
+config.toml
+
