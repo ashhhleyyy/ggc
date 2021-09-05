@@ -58,6 +58,10 @@ pub enum SiteSource {
         directory: PathBuf,
         #[serde(default)]
         auto_index: bool,
+        #[serde(default)]
+        disable_footer: bool,
+        #[serde(default)]
+        hide_version: bool,
     },
 }
 
@@ -65,12 +69,16 @@ impl SiteSource {
     pub async fn serve(&self, host: &str, stream: &mut TlsStream<TcpStream>, path: &str) -> io::Result<()> {
         info!("[{}] GET {}", host, path);
         match self {
-            SiteSource::FlatDir { directory, auto_index } => serve_static(&directory, *auto_index, stream, path).await,
+            SiteSource::FlatDir {
+                directory, auto_index,
+                disable_footer, hide_version
+            } => serve_static(&directory, *auto_index, *disable_footer, *hide_version, stream, path).await,
         }
     }
 }
 
-async fn serve_static(directory: &Path, auto_index: bool, stream: &mut TlsStream<TcpStream>, url_path: &str) -> io::Result<()> {
+async fn serve_static(directory: &Path, auto_index: bool, disable_footer: bool, hide_version: bool,
+                      stream: &mut TlsStream<TcpStream>, url_path: &str) -> io::Result<()> {
     let mut path = directory.to_path_buf();
 
     if url_path.len() > 1 {
@@ -84,7 +92,7 @@ async fn serve_static(directory: &Path, auto_index: bool, stream: &mut TlsStream
             serve_file(index_file, stream).await
         } else {
             if auto_index {
-                serve_str(&generate_folder_index(&path).await?, stream).await
+                serve_str(&generate_folder_index(&path, disable_footer, hide_version).await?, stream).await
             } else {
                 GeminiResponseBody::not_found().write_to(stream).await
             }

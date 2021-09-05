@@ -8,6 +8,8 @@ pub const SERVER_BUILD_INFO: &str = concat!(
     env!("CARGO_PKG_NAME"),
     "/",
     env!("CARGO_PKG_VERSION"),
+    "-git.",
+    env!("GIT_HASH")
 );
 
 pub fn load_certs(path: &Path) -> Vec<rustls::Certificate> {

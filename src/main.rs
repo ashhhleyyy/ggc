@@ -132,6 +132,7 @@ impl Site {
 async fn main() {
     env_logger::init();
     info!("Hello, world!");
+    info!("Build {} initialising...", utils::SERVER_BUILD_INFO);
     let config = load_config();
     if config.sites.is_empty() {
         warn!("No sites specified in config, all routes will 51!");
