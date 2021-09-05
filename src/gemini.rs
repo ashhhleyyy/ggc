@@ -182,4 +182,13 @@ mod test {
         assert!(result.is_err());
         assert_eq!(result.err().unwrap(), GeminiUrlError::UnknownScheme("http".to_string()));
     }
+
+    #[test]
+    /// This technically isn't a test for this server's validation,
+    /// but it should prevent future issues if dependency crates change behavior for some reason.
+    fn test_directory_escape() {
+        let result = parse_gemini_url("gemini://example.org/../secrets.txt");
+        assert!(result.is_ok());
+        assert_eq!(result.ok().unwrap().path(), "/secrets.txt");
+    }
 }
